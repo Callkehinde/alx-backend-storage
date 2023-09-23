@@ -1,20 +1,25 @@
--- Creates a stored procedure AddBonus
--- that adds a new correction for a student.
-
-DELIMITER $$
+-- Creates a stored procedure AddBonus that adds a new
+-- correction for a student.
 DROP PROCEDURE IF EXISTS AddBonus;
-CREATE PROCEDURE AddBonus(
-	IN `user_id` INTEGER,
-	IN `project_name` VARCHAR(255),
-	IN `score` INTEGER
-)
+DELIMITER $$
+CREATE PROCEDURE AddBonus (user_id INT, project_name VARCHAR(255), score FLOAT)
 BEGIN
-    INSERT INTO projects (name)
-    SELECT project_name
-    -- WHERE NOT EXISTS (SELECT * FROM projects WHERE name=project_name LIMIT 1);
-    WHERE project_name NOT IN (SELECT name FROM projects);
+    DECLARE project_count INT DEFAULT 0;
+    DECLARE project_id INT DEFAULT 0;
 
-    INSERT INTO corrections (user_id, project_id, score)
-    VALUES(user_id, (SELECT id from projects WHERE name=project_name), score);
+    SELECT COUNT(id)
+        INTO project_count
+        FROM projects
+        WHERE name = project_name;
+    IF project_count = 0 THEN
+        INSERT INTO projects(name)
+            VALUES(project_name);
+    END IF;
+    SELECT id
+        INTO project_id
+        FROM projects
+        WHERE name = project_name;
+    INSERT INTO corrections(user_id, project_id, score)
+        VALUES (user_id, project_id, score);
 END $$
-DELIMITER ;$$
+DELIMITER ;
