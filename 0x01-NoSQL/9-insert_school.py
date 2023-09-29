@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""
-This module have a utility function that insert documents
-"""
-import pymongo
+'''Task 9's module.
+'''
 
 
 def insert_school(mongo_collection, **kwargs):
-    """
-    insert into school
-    """
-    return mongo_collection.insert_one(kwargs).inserted_id
+    '''Inserts a new document in a collection.
+    '''
+    result = mongo_collection.insert_one(kwargs)
+    return result.inserted_id
